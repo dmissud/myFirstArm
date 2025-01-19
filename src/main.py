@@ -26,26 +26,38 @@ def init():
         pca.servo[i].set_pulse_width_range(MIN_IMP[i] , MAX_IMP[i])
 
 # function pcaScenario
-def pca_scenario():
+def pca_scenario(nb):
     """Scenario to test servo"""
-    for i in range(2):
-        for j in range(MIN_ANG[i],MAX_ANG[i],1):
-            print("Send angle {} to Servo {}".format(j,i))
-            pca.servo[i].angle = j
-            time.sleep(0.1)
-        for j in range(MAX_ANG[i],MIN_ANG[i],-1):
-            print("Send angle {} to Servo {}".format(j,i))
-            pca.servo[i].angle = j
-            time.sleep(0.1)
-        pca.servo[i].angle=None #disable channel
-        time.sleep(0.5)
+    print(f'freq, {pca.servo[nb]._pwm_out.frequency}')
+    print(f'minduty, {pca.servo[nb]._min_duty}')
+    print(f'range, {pca.servo[nb]._duty_range}')
+    pca.servo[nb].angle = 90
+    time.sleep(3)
+    pca.servo[nb].angle = 45
+    time.sleep(3)
+    pca.servo[nb].angle = 0
+    time.sleep(3)
+    pca.servo[nb].angle = 45
+    time.sleep(3)
+    pca.servo[nb].angle = 90
+    time.sleep(3)
+    pca.servo[nb].angle = 135
+    time.sleep(3)
+    pca.servo[nb].angle = 180
+    time.sleep(3)
+    pca.servo[nb].angle = 135
+    time.sleep(3)
+    pca.servo[nb].angle = 90
+    time.sleep(3)
+    pca.servo[nb].angle=None #disable channel
+    time.sleep(0.5)
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
     init()
     GPIO.output(22, GPIO.HIGH)
-    pca_scenario()
+    pca_scenario(0)
     GPIO.output(22, GPIO.LOW)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

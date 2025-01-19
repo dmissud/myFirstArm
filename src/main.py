@@ -1,4 +1,6 @@
 import time
+
+from adafruit_motor import servo
 from adafruit_servokit import ServoKit
 import RPi.GPIO as GPIO
 
@@ -12,8 +14,6 @@ MAX_ANG  =[180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180, 180,
 #Objects pca=ServoKit(channels=16, address=40)
 pca = ServoKit(channels=16)
 # Configuration des broches GPIO
-GPIO.setmode(GPIO.BCM)  # Utiliser le numéro de broche du processeur Broadcom
-GPIO.setup(22, GPIO.OUT)  # Définir la broche GPIO 22 comme une sortie
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
@@ -26,38 +26,28 @@ def init():
         pca.servo[i].set_pulse_width_range(MIN_IMP[i] , MAX_IMP[i])
 
 # function pcaScenario
-def pca_scenario(nb):
+def pca_scenario(numero_de_servo,angle_arrivee):
     """Scenario to test servo"""
-    print(f'freq, {pca.servo[nb]._pwm_out.frequency}')
-    print(f'minduty, {pca.servo[nb]._min_duty}')
-    print(f'range, {pca.servo[nb]._duty_range}')
-    pca.servo[nb].angle = 90
-    time.sleep(3)
-    pca.servo[nb].angle = 45
-    time.sleep(3)
-    pca.servo[nb].angle = 0
-    time.sleep(3)
-    pca.servo[nb].angle = 45
-    time.sleep(3)
-    pca.servo[nb].angle = 90
-    time.sleep(3)
-    pca.servo[nb].angle = 135
-    time.sleep(3)
-    pca.servo[nb].angle = 180
-    time.sleep(3)
-    pca.servo[nb].angle = 135
-    time.sleep(3)
-    pca.servo[nb].angle = 90
-    time.sleep(3)
-    pca.servo[nb].angle=None #disable channel
-    time.sleep(0.5)
+    print(f'freq, {pca.servo[numero_de_servo]._pwm_out.frequency}')
+    print(f'minuty, {pca.servo[numero_de_servo]._min_duty}')
+    print(f'range, {pca.servo[numero_de_servo]._duty_range}')
+    print(f'range, {pca.servo[numero_de_servo].angle}')
+    angle_depart=int(pca.servo[numero_de_servo].angle)
+    time.sleep(2)
+    while angle_depart!=angle_arrivee:
+        if angle_arrivee>angle_depart:
+            angle_depart=angle_depart+1
+            pca.servo[numero_de_servo].angle = angle_depart
+        else:
+            angle_depart=angle_depart-1
+            pca.servo[numero_de_servo].angle = angle_depart
+        time.sleep(0.05)
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     print_hi('PyCharm')
     init()
-    GPIO.output(22, GPIO.HIGH)
-    pca_scenario(0)
-    GPIO.output(22, GPIO.LOW)
+    pca_scenario(0,90)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
